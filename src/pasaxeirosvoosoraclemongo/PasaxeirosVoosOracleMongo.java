@@ -6,6 +6,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import org.bson.Document;
 
 /**
@@ -21,7 +24,35 @@ public class PasaxeirosVoosOracleMongo {
     BasicDBObject claves;
     
     
+String user = "hr";
+    String password = "hr";
+    String driver = "jdbc:oracle:thin:";
+    String host = "localhost.localdomain"; //String host = "1982.168.1.14";
+    String porto = "1521";
+    String sid = "orcl";
+    String url = driver + user + "/" + password + "@" + host + ":" + porto + ":" + sid;
+    public static Connection conn;
 
+    /**
+     * Conexion a BD
+     *
+     * @return Retorna a conexion
+     */
+    public Connection conexionBD() {
+        try {
+            Class.forName("oracle.jdbc.OracleDriver");
+            conn = (Connection) DriverManager.getConnection(url);
+        } catch (Exception e) {
+        }
+        if (conn != null) {
+            System.out.println("Abierta la conexión a la BD");
+        } else {
+            System.out.println("Conexion fallida");
+        }
+        return conn;
+    }
+
+    
     public void conexion(String bd, String colection) {
         cliente = new MongoClient("localhost", 27017);
         base = cliente.getDatabase(bd);
@@ -52,7 +83,10 @@ public class PasaxeirosVoosOracleMongo {
     }
     
     public void cambiarConfirmado(){
+        
         coleccion.updateOne(new Document("_id", idx),(new Document("$set",new Document("score",9898))));
+
+
 
     }
     
