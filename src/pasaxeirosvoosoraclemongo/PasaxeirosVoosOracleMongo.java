@@ -1,12 +1,5 @@
 package pasaxeirosvoosoraclemongo;
 
-//import com.mongodb.BasicDBObject;
-//import com.mongodb.MongoClient;
-//import com.mongodb.client.FindIterable;
-//import com.mongodb.client.MongoCollection;
-//import com.mongodb.client.MongoCursor;
-//import com.mongodb.client.MongoDatabase;
-//import com.mongodb.connection.Connection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -106,7 +99,6 @@ public class PasaxeirosVoosOracleMongo {
     public void actualizaPrezoReserva() throws SQLException {
         FindIterable<Document> cursor = coleccion.find();
         MongoCursor<Document> iterator = cursor.iterator();
-        int i = 1;
         while (iterator.hasNext()) {
             Document d = iterator.next();
             Double idVooIda = d.getDouble("idvooida");
@@ -115,38 +107,31 @@ public class PasaxeirosVoosOracleMongo {
 
             String prezoVooIda = "SELECT prezo FROM voos WHERE voo=" + idVooIda;
             String prezoVooVolta = "SELECT prezo FROM voos WHERE voo=" + idVooVolta;
-            
+
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(prezoVooIda);
-            
+
             Statement stt = conn.createStatement();
             ResultSet rst = stt.executeQuery(prezoVooVolta);
-            
+
             int idIda = 0;
             int idVolta = 0;
-            
+
             while (rs.next()) {
                 idIda = rs.getInt(1);
             }
-            
+
             while (rst.next()) {
                 idVolta = rst.getInt(1);
             }
-            
-            int total = idIda + idVolta;
-            
-            coleccion.updateOne(new Document("prezoreserva", prezoReserva),(new Document("$set",new Document("prezoreserva",total))));
 
-            
-               
+            int total = idIda + idVolta;
+
+            coleccion.updateOne(new Document("prezoreserva", prezoReserva), (new Document("$set", new Document("prezoreserva", total))));
         }
         pasajeros();
         cliente.close();
-    }  
-        
-        
-        
-    
+    }
 
     public void pasajeros() {
         try {
